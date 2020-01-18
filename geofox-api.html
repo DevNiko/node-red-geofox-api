@@ -1,0 +1,32 @@
+<script type="text/javascript">
+    RED.nodes.registerType('geofox-api', {
+        category: 'function',
+        color: '#a6bbcf',
+        defaults: {
+            name: {
+                value: ""
+            }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "file.png",
+        label: function () {
+            return this.name || "geofox-api";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="geofox-api">
+    <div class="form-row">
+        <label for="node-input-secret"><i class="icon-tag"></i> API Secret</label>
+        <input type="text" id="node-input-secret" placeholder="API Secret">
+    </div>
+    <div class="form-row">
+        <label for="node-input-departure"><i class="icon-tag"></i> Departure</label>
+        <input type="text" id="node-input-departure" placeholder="Departure">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="geofox-api">
+    <p>A simple node that converts the message payloads into all lower-case characters</p>
+</script>

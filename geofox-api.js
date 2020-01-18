@@ -1,18 +1,22 @@
-
-
 const crypto = require('crypto-js');
 
-module.exports = function(RED) {
-    function LowerCaseNode(config) {
-        RED.nodes.createNode(this,config);
+
+function createSignature(requestBody, apiSecretKey) {
+    const hmac = crypto.createHmac('sha1', apiSecretKey); // unfortunataly geofox supports only sha1
+    hmac.update(JSON.stringify(requestBody));
+    return hmac.digest('base64');
+}
+
+
+module.exports = function (RED) {
+    function GeofoxApiNode(config) {
+        RED.nodes.createNode(this, config);
         var node = this;
-        node.on('input', function(msg) {
-            let signature = crypto.createHash("sha1")
-                .update("")
-                .digest("base64");
-            msg.payload = msg.payload.toLowerCase();
+        node.on('input', function (msg) {
+            let signature = createSignature(msg, apiSecretKey);
+            msg.payload = msg.payload;
             node.send(msg);
         });
     }
-    RED.nodes.registerType("lower-case",LowerCaseNode);
+    RED.nodes.registerType("geofox-api", GeofoxApiNode);
 }
