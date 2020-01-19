@@ -1,19 +1,28 @@
 const crypto = require('crypto-js');
 
 
-function createSignature(requestBody, apiSecretKey) {
-    const hmac = crypto.createHmac('sha1', apiSecretKey); // unfortunataly geofox supports only sha1
-    hmac.update(JSON.stringify(requestBody));
+function createSignature(messageBody, apiSecretKey) {
+    let hmac = crypto.HmacSHA1(JSON.stringify(messageBody), apiSecretKey);
     return hmac.digest('base64');
 }
-
 
 module.exports = function (RED) {
     function GeofoxApiNode(config) {
         RED.nodes.createNode(this, config);
-        var node = this;
+        this.geofoxSecret = config.secret;
+        this.departure = config.departure;
+        let node = this;
+
         node.on('input', function (msg) {
-            let signature = createSignature(msg, apiSecretKey);
+            this.log("on input");
+            console.log("secret: " + node.geofoxSecret);
+            let msgBody = {
+                departure: node.departure
+            }
+
+            let signature = createSignature(msgBody, node.geofoxSecret);
+            this.log(`Signature: ${signature}`);
+
             msg.payload = msg.payload;
             node.send(msg);
         });

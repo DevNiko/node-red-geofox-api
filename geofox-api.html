@@ -3,13 +3,16 @@
         category: 'function',
         color: '#a6bbcf',
         defaults: {
-            name: {
+            secret: {
+                value: ""
+            },
+            departure: {
                 value: ""
             }
         },
         inputs: 1,
         outputs: 1,
-        icon: "file.png",
+        icon: "icon.png",
         label: function () {
             return this.name || "geofox-api";
         }

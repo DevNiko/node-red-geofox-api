@@ -2,13 +2,13 @@
   "name": "node-red-contrib-geofox-api",
   "version": "0.1.0",
   "description": "A Node to receive Geofox (HVV) traffic data.",
-  "main": "index.js",
+  "main": "geofox-api.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "node-red" : {
+  "node-red": {
     "nodes": {
-        "geofox-api": "geofox-api.js"
+      "geofox-api": "geofox-api.js"
     }
   },
   "repository": {
@@ -16,6 +16,7 @@
     "url": "git+https://github.com/DevNiko/node-red-geofox-api.git"
   },
   "keywords": [
+    "node-red",
     "hvv",
     "geofox"
   ],
@@ -24,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/DevNiko/node-red-geofox-api/issues"
   },
-  "homepage": "https://github.com/DevNiko/node-red-geofox-api#readme"
+  "homepage": "https://github.com/DevNiko/node-red-geofox-api#readme",
+  "dependencies": {
+    "crypto-js": "^3.1.9-1" 
+  }
 }
