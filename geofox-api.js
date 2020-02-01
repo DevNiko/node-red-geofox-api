@@ -1,60 +1,101 @@
 const crypto = require("crypto");
-const rpn = requitre("request-promise-native");
+const rpn = require("request-promise-native");
 const apiEndpoint = "https://geofox.hvv.de/gti/public/";
 
 function createSignature(messageBody, apiSecretKey) {
   return crypto
     .createHmac("sha1", apiSecretKey)
     .update(JSON.stringify(messageBody))
-    .digest("hex");
+    .digest("base64");
 }
 
-function departureList(station, signature) {
+function departureList(msgBody, apiUser, apiSecret) {
+  if (!apiSecret) {
+    return new Promise(function(resolve, reject) {
+      reject("No Geofox API Secret provided");
+    });
+  }
+
+  if (!apiUser) {
+    return new Promise(function(resolve, reject) {
+      reject("No Geofox User provided");
+    });
+  }
+
+  const signature = createSignature(msgBody, apiSecret);
+
   var options = {
     uri: apiEndpoint + "departureList",
     headers: {
+      "Content-Type": "application/json",
       Accept: "application/json",
       "User-Agent": "Request-Promise",
       "X-Platform": "web",
-      "geofox-auth-user": "NikoStraub",
+      "geofox-auth-user": apiUser,
       "geofox-auth-signature": signature
     },
     json: true,
     method: "POST",
-    body: {
-      station: station,
-      time: "",
-      useRealtime: true
-    }
+    body: msgBody
   };
 
-  rp(options)
+  return rpn(options)
     .then(function(response) {
-      console.log(response);
+      return response;
     })
     .catch(function(err) {
-      console.log(err);
+      let { statusCode, error } = err;
+      let { errorText, errDevInfo = "" } = error;
+      throw new Error(
+        "Geofox API 'departureList' Request Error: " +
+          statusCode +
+          " - " +
+          errorText +
+          " - " +
+          errDevInfo
+      );
     });
 }
 
 module.exports = function(RED) {
-  async function GeofoxApiNode(config) {
+  function GeofoxApiNode(config) {
     RED.nodes.createNode(this, config);
-    this.geofoxSecret = config.secret;
-    this.departureStation = config.departure;
+    this.apiUser = config.user;
+    this.apiSecret = config.secret;
+    this.station = config.station;
+    this.city = config.city;
     let node = this;
 
     node.on("input", function(msg) {
       this.log("on input");
-      let msgBody = {
-        departure: node.departure
+
+      let date = new Date();
+      // Plus 60 Minutes from Now
+      date.setMinutes(date.getMinutes() + 60);
+
+      const msgBody = {
+        station: {
+          name: this.station,
+          city: this.city,
+          combinedName: this.station + " " + this.city,
+          type: "STATION"
+        },
+        time: {
+          date: date.toISOString().slice(0, 10),
+          time: date.getTime()
+        },
+        useRealtime: true
       };
 
-      const signature = createSignature(msgBody, node.geofoxSecret);
-      const departures = await departureList(departureStation, signature);
+      msg.payload = departureList(msgBody, node.apiUser, node.apiSecret)
+        .then(function(response) {
+          return response;
+        })
+        .catch(function(err) {
+          console.log(err);
+          node.error(err);
+        });
 
-
-      msg.payload = msg.payload;
       node.send(msg);
     });
   }
