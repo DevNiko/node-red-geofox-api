@@ -3,6 +3,9 @@ const rpn = require("request-promise-native");
 const moment = require("moment");
 const apiEndpoint = "https://geofox.hvv.de/gti/public/";
 
+// set date and time format to "de"
+moment.locale("de");
+
 function createSignature(messageBody, apiSecretKey) {
   return crypto
     .createHmac("sha1", apiSecretKey)
@@ -92,96 +95,140 @@ function departureList(msgBody, apiUser, apiSecret) {
     })
     .catch(function(err) {
       let { statusCode, error } = err;
-      let { errorText, errDevInfo = "" } = error;
-      return new Error(
-        "Geofox API 'departureList' Request Error: " +
-          statusCode +
-          " - " +
-          errorText +
-          " - " +
-          errDevInfo
-      );
+      let { errorText = "", errDevInfo = "" } = error;
+      return {
+        error: "Error: " + statusCode + " - " + errorText + " - " + errDevInfo
+      };
     });
 }
 
+/*
+ * determines the means of transport (bus, train ...)
+ */
+function extractServiceTypesFromData(data) {
+  const serviceTypes = [];
+
+  let {
+    serviceTypesBus = false,
+    serviceTypesZug = false,
+    serviceTypesSbahn = false,
+    serviceTypesUbahn = false
+  } = data;
+
+  if (serviceTypesBus === true) serviceTypes.push("BUS");
+  if (serviceTypesZug === true) serviceTypes.push("ZUG");
+  if (serviceTypesSbahn === true) serviceTypes.push("SBAHN");
+  if (serviceTypesUbahn === true) serviceTypes.push("UBAHN");
+
+  return serviceTypes;
+}
+
+async function handleDepartures(data) {
+  let apiUser;
+  let apiSecret;
+  let station;
+  let cityFromInput;
+
+  if (!data) {
+    return {};
+  }
+
+  apiUser = data.user;
+  apiSecret = data.secret;
+  station = data.station;
+  cityFromInput = data.city;
+
+  const cnRequestBody = {
+    coordinateType: "EPSG_4326",
+    maxList: 1,
+    theName: {
+      name: station,
+      type: "STATION"
+    }
+  };
+
+  const cnResponse = await checkname(cnRequestBody, apiUser, apiSecret);
+
+  let { results } = cnResponse;
+  let { id, city } = results[0];
+
+  // use auto corrected city name from checkname response
+  if (city && cityFromInput !== city) {
+    cityFromInput = city;
+  }
+
+  const departureListBody = {
+    station: {
+      id: id,
+      name: station,
+      city: cityFromInput,
+      combinedName: station + ", " + cityFromInput,
+      type: "STATION"
+    },
+    serviceTypes: extractServiceTypesFromData(data),
+    time: {
+      date: moment().format("L"),
+      time: moment().format("LT")
+    },
+    maxList: 4,
+    maxTimeOffset: 45,
+    useRealtime: true
+  };
+
+  const departureListResponse = await departureList(
+    departureListBody,
+    apiUser,
+    apiSecret
+  );
+  const { error = "", departures = [] } = departureListResponse;
+  let payload = {};
+
+  if (error !== "") {
+    payload = {
+      error: {
+        code: "Geofox API 'departureList' Request Error",
+        message: error
+      }
+    };
+  }
+
+  if (departures.length > 0) {
+    payload = {
+      station: departureListBody.station.name,
+      departures: { ...departures }
+    };
+  }
+
+  return payload;
+}
+
+function handleRoute() {}
+
 module.exports = function(RED) {
   function GeofoxApiNode(config) {
+    let node;
+
     RED.nodes.createNode(this, config);
-    this.apiUser = config.user;
-    this.apiSecret = config.secret;
-    this.station = config.station;
-    this.city = config.city;
-    let node = this;
+
+    this.timetableInformation = config.timetableInformation;
+    node = this;
 
     node.on("input", async function(msg) {
       this.log("on input");
 
-      let date = new Date();
-      // Plus 60 Minutes from Now
-      date.setMinutes(date.getMinutes() + 60);
-      moment.locale("de");
-
-      const cnRequestBody = {
-        coordinateType: "EPSG_4326",
-        maxList: 1,
-        theName: {
-          name: node.station,
-          type: "STATION"
-        }
-      };
-
-      const cnResponse = await checkname(
-        cnRequestBody,
-        node.apiUser,
-        node.apiSecret
-      );
-
-      let { results } = cnResponse;
-      let { id, city } = results[0];
-
-      // use corrected city name
-      if (city && node.city !== city) {
-        node.city = city;
+      switch (node.timetableInformation) {
+        case "departure":
+          const response = await handleDepartures(config);
+          msg.payload = { ...response };
+          break;
+        case "route":
+          break;
       }
 
-      const msgBody = {
-        station: {
-          id: id,
-          name: node.station,
-          city: city,
-          combinedName: node.station + " " + node.city,
-          type: "STATION"
-        },
-        serviceTypes: ["ZUG"],
-        time: {
-          date: moment().format("L"),
-          time: moment().format("LT")
-        },
-        useRealtime: true
-      };
-
-      const response = await departureList(
-        msgBody,
-        node.apiUser,
-        node.apiSecret
-      );
-      const { returnCode, errorText = "", error = {} } = response;
-      let payload = response;
-
-      if (returnCode === "ERROR_TEXT" && errorText !== "") {
-        payload = {
-          error: {
-            code: "Geofox API Error",
-            message: errorText
-          }
-        };
+      if (msg.payload && typeof msg.payload.error === Error) {
+        node.error(msg.payload.error);
       }
 
-      if (typeof error === Error) {
-        node.error(error);
-      }
-
-      msg.payload = payload;
       node.send(msg);
     });
   }

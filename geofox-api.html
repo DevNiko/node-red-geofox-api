@@ -1,19 +1,71 @@
 <script type="text/javascript">
+  function onEdit() {
+    let timetableInformationSelect = document.getElementById(
+      "node-input-timetableInformation"
+    );
+    switch (timetableInformationSelect.value) {
+      case "departure":
+        document.getElementById("gti-departure-container").style.display =
+          "block";
+        break;
+      case "route":
+        document.getElementById("gti-route-container").style.display = "block";
+        break;
+    }
+  }
+
+  function timetableInformationSelectListener() {
+    let timetableInformationSelect = document.getElementById(
+      "node-input-timetableInformation"
+    );
+    timetableInformationSelect.addEventListener("change", function() {
+      let departureContainer = document.getElementById(
+        "gti-departure-container"
+      );
+      let routeContainer = document.getElementById("gti-route-container");
+      if (this.value === "departure") {
+        departureContainer.style.display = "block";
+        routeContainer.style.display = "none";
+      }
+      if (this.value === "route") {
+        departureContainer.style.display = "none";
+        routeContainer.style.display = "block";
+      }
+    });
+  }
+
   RED.nodes.registerType("geofox-api", {
     category: "function",
     color: "#a6bbcf",
     defaults: {
       user: {
-        value: ""
+        value: "",
+        required: true
       },
       secret: {
-        value: ""
+        value: "",
+        required: true
       },
       station: {
         value: ""
       },
       city: {
         value: ""
+      },
+      timetableInformation: {
+        value: "route"
+      },
+      serviceTypesBus: {
+        value: "bus"
+      },
+      serviceTypesZug: {
+        value: "zug"
+      },
+      serviceTypesSbahn: {
+        value: "sbahn"
+      },
+      serviceTypesUbahn: {
+        value: "ubahn"
       }
     },
     inputs: 1,
@@ -21,29 +73,107 @@
     icon: "icon.png",
     label: function() {
       return this.name || "geofox-api";
+    },
+    oneditprepare: function() {
+      onEdit();
+      timetableInformationSelectListener();
     }
   });
 </script>
 
+<style>
+  #gti-route-container,
+  #gti-departure-container {
+    display: none;
+  }
+</style>
+
 <script type="text/html" data-template-name="geofox-api">
-    <div class="form-row">
-        <label for="node-input-user"><i class="icon-tag"></i> API Benutzername</label>
-        <input type="text" id="node-input-user" placeholder="API Benutzername">
-    </div>
-    <div class="form-row">
-        <label for="node-input-secret"><i class="icon-tag"></i> API Secret Key</label>
-        <input type="text" id="node-input-secret" placeholder="API Secret">
-    </div>
+  <div class="form-row">
+      <label for="node-input-user"><i class="icon-tag"></i> API Benutzername</label>
+      <input type="text" id="node-input-user" placeholder="API Benutzername"/>
+  </div>
+  <div class="form-row">
+      <label for="node-input-secret"><i class="icon-tag"></i> API Secret Key</label>
+      <input type="text" id="node-input-secret" placeholder="API Secret"/>
+  </div>
+  <div class="form-row">
+    <label for="node-input-timetableInformation"><i class="icon-tag"></i> Fahrplanauskunft Variante</label>
+    <select id="node-input-timetableInformation">
+      <option value="departure">Abfahrten</option>
+      <option value="route">Verbindungen</option>
+      <option value="notifications">Aktuelle Meldungen</option>
+    </select>
+  </div>
+  <div id="gti-departure-container">
     <div class="form-row">
         <label for="node-input-station"><i class="icon-tag"></i> Haltestelle</label>
         <input type="text" id="node-input-station" placeholder="Haltestelle">
     </div>
     <div class="form-row">
       <label for="node-input-city"><i class="icon-tag"></i> Ort</label>
-      <input type="text" id="node-input-city" placeholder="Ort">
+      <input type="text" id="node-input-city" placeholder="Ort"/>
+    </div>
+  </div>
+  <div id="gti-route-container">
+  </div>
+  <div class="form-row">
+    <label for="node-input-serviceTypes"><i class="icon-tag"></i> Verkehrsmittel</label>
+    <ul>
+      <li>
+        <label for="node-input-serviceTypesBus"><i class="icon-tag"></i> Bus</label>
+        <input type="checkbox" id="node-input-serviceTypesBus" value="bus"/>
+      </li>
+      <li>
+        <label for="node-input-serviceTypesZug"><i class="icon-tag"></i> Zug (alle Züge)</label>
+        <input type="checkbox" id="node-input-serviceTypesZug" value="zug"/>
+      </li>
+      <li>
+        <label for="node-input-serviceTypesSbahn"><i class="icon-tag"></i> S-Bahn</label>
+        <input type="checkbox" id="node-input-serviceTypesSbahn" value="sbahn"/>
+      </li>
+      <li>
+        <label for="node-input-serviceTypesUbahn"><i class="icon-tag"></i> U-Bahn</label>
+        <input type="checkbox" id="node-input-serviceTypesUbahn" value="ubahn"/>
+      </li>
+      <li>
+        <label for="node-input-serviceTypesAkn"><i class="icon-tag"></i> AKN</label>
+        <input type="checkbox" id="node-input-serviceTypesAkn" value="akn"/>
+      </li>
+      <li>
+        <label for="node-input-serviceTypesRbahn"><i class="icon-tag"></i> Regio-Bahn</label>
+        <input type="checkbox" id="node-input-serviceTypesRbahn" value="rbahn"/>
+      </li>
+      <li>
+        <label for="node-input-serviceTypesFernbahn"><i class="icon-tag"></i> Fernbahn</label>
+        <input type="checkbox" id="node-input-serviceTypesFernbahn" value="fernbahn"/>
+      </li>
+      <li>
+        <label for="node-input-serviceTypesAst"><i class="icon-tag"></i> Ast</label>
+        <input type="checkbox" id="node-input-serviceTypesAst" value="ast"/>
+      </li>
+      <li>
+        <label for="node-input-serviceTypesFaehre"><i class="icon-tag"></i> Fähre</label>
+        <input type="checkbox" id="node-input-serviceTypesFaehre" value="faehre"/>
+      </li>
+      <li>
+        <label for="node-input-serviceTypesNachtbus"><i class="icon-tag"></i> Nachtbus</label>
+        <input type="checkbox" id="node-input-serviceTypesNachtbus" value="nachtbus"/>
+      </li>
+    </ul>
+
+
+
+
+
+
+
+
+
+
   </div>
 </script>
 
-<script type="text/html" data-help-name="geofox-api">
+<script type="text/html" data-help-secret="geofox-api">
   <p>A simple node that converts the message payloads into all lower-case characters</p>
 </script>
