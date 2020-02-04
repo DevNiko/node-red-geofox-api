@@ -1,0 +1,69 @@
+<div
+  id="{{'geofox_api_'+$id}}"
+  style="{{'color:'+theme.base_color}}"
+  layout="row"
+  layout-align="space-between"
+>
+  <div style="display:block" layout="row">
+    <span id="{{'departure_station_'+$id}}"></span>
+  </div>
+  <table id="{{'geofox_api_table_'+$id}}" width="100%"></table>
+</div>
+<script>
+  (function(scope) {
+    let table;
+    let tableInnerHtml = "";
+    let tableHeadHtml =
+      '<tr><th align="left" >Linie</th><th align="left" >Richtung</th><th align="left" >Abfahrt</th></tr>';
+    let nowTime = new Date();
+    let stationNameElm;
+
+    scope.$watch("msg", function(msg) {
+      table = $("#geofox_api_table_" + scope.$id);
+      stationNameElm = $("#departure_station_" + scope.$id);
+
+      if (msg) {
+        table.empty();
+        const departures = msg.payload.departures;
+        stationNameElm.html(msg.payload.station);
+        let rowHtml = "";
+        for (let [departureKey, departure] of Object.entries(departures)) {
+          departureTime = new Date(
+            nowTime.getTime() + departure.timeOffset * 60000
+          );
+          rowHtml =
+            rowHtml +
+            '<tr><td id="geofox-api-departure-' +
+            departureKey +
+            '">' +
+            departure.line.type.shortInfo +
+            " " +
+            departure.line.name +
+            '</td><td id="">' +
+            departure.line.direction +
+            '</td><td id="">' +
+            String(departureTime.getHours()).padStart(2, "0") +
+            ":" +
+            String(departureTime.getMinutes()).padStart(2, "0") +
+            "</td></tr>";
+        }
+
+        tableInnerHtml = tableHeadHtml + rowHtml;
+
+        if (table.length > 0) {
+          table.append(tableInnerHtml);
+        }
+      }
+    });
+  })(scope);
+</script>
+<script>
+  var value = "hello world";
+  // or overwrite value in your callback function ...
+  this.scope.action = function() {
+    return value;
+  };
+</script>
+<md-button ng-click="send({payload:action()})">
+  Click me to send a hello world
+</md-button>
