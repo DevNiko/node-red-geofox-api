@@ -170,7 +170,7 @@ async function handleDepartures(data) {
       date: moment().format("L"),
       time: moment().format("LT")
     },
-    maxList: 4,
+    maxList: 8,
     maxTimeOffset: 45,
     useRealtime: true
   };
