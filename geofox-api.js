@@ -124,19 +124,18 @@ function extractServiceTypesFromData(data) {
 }
 
 async function handleDepartures(data) {
-  let apiUser;
-  let apiSecret;
-  let station;
-  let cityFromInput;
-
   if (!data) {
     return {};
   }
 
-  apiUser = data.user;
-  apiSecret = data.secret;
-  station = data.station;
-  cityFromInput = data.city;
+  let {
+    user,
+    secret,
+    station,
+    city: cityFromInput,
+    maxList = 3,
+    maxTimeOffset = 45
+  } = data;
 
   const cnRequestBody = {
     coordinateType: "EPSG_4326",
@@ -147,7 +146,7 @@ async function handleDepartures(data) {
     }
   };
 
-  const cnResponse = await checkname(cnRequestBody, apiUser, apiSecret);
+  const cnResponse = await checkname(cnRequestBody, user, secret);
 
   let { results } = cnResponse;
   let { id, city } = results[0];
@@ -170,15 +169,15 @@ async function handleDepartures(data) {
       date: moment().format("L"),
       time: moment().format("LT")
     },
-    maxList: 8,
-    maxTimeOffset: 45,
+    maxList: maxList,
+    maxTimeOffset: maxTimeOffset,
     useRealtime: true
   };
 
   const departureListResponse = await departureList(
     departureListBody,
-    apiUser,
-    apiSecret
+    user,
+    secret
   );
   const { error = "", departures = [] } = departureListResponse;
   let payload = {};
