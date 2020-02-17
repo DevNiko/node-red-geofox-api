@@ -25,6 +25,12 @@ function buildRequestHeaders(apiUser, signature) {
   };
 }
 
+/**
+ * Check a station name
+ * @param {Object} msgBody
+ * @param {String} apiUser
+ * @param {String} apiSecret
+ */
 function checkname(msgBody, apiUser, apiSecret) {
   if (!apiSecret) {
     return new Promise(function(resolve, reject) {
@@ -66,6 +72,13 @@ function checkname(msgBody, apiUser, apiSecret) {
     });
 }
 
+/**
+ * Retrieve departure list for given body data.
+ *
+ * @param {Object} msgBody
+ * @param {String} apiUser
+ * @param {String} apiSecret
+ */
 function departureList(msgBody, apiUser, apiSecret) {
   if (!apiSecret) {
     return new Promise(function(resolve, reject) {
