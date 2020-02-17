@@ -1,12 +1,9 @@
 <div
   id="{{'geofox_api_'+$id}}"
   style="{{'color:'+theme.base_color}}"
-  layout="row"
   layout-align="space-between"
 >
-  <div style="display:block" layout="row">
-    <span id="{{'departure_station_'+$id}}"></span>
-  </div>
+  <h3 style="width:100%" id="{{'departure_station_'+$id}}"></h3>
   <table id="{{'geofox_api_table_'+$id}}" width="100%"></table>
 </div>
 <script>
@@ -14,7 +11,7 @@
     let table;
     let tableInnerHtml = "";
     let tableHeadHtml =
-      '<tr><th align="left" >Linie</th><th align="left" >Richtung</th><th align="left" >Abfahrt</th><th align="left" >Meldungen</th></tr>';
+      '<tr><th colspan="2" align="left" >Linie</th><th align="left" >Richtung</th><th align="left" >Abfahrt</th><th align="left" >Meldungen</th></tr>';
     let nowTime = new Date();
     let stationNameElm;
     let departureDelayInfo = "";
@@ -31,19 +28,26 @@
         let rowHtml = "";
 
         for (let [departureKey, departure] of Object.entries(departures)) {
-          departureTime = new Date(
+          const departureTime = new Date(
             nowTime.getTime() + departure.timeOffset * 60000
           );
-          cancelledInfo = departure.cancelled ? "Fällt aus" : "";
-          departureDelayInfo =
+          const cancelledInfo = departure.cancelled ? "Fällt aus" : "";
+          const departureDelayInfo =
             departure.delay > 0 ? "Verspt. +" + departure.delay : "";
+          const departurePlatform = departure.platform
+            ? "Gleis: " + departure.platform
+            : "";
+          const vType = String(departure.line.type.shortInfo).toLowerCase();
+          const iconSrc = `https://www.geofox.de/icon_service/vehicle?types=${vType}&height=20`;
+
           rowHtml =
             rowHtml +
-            '<tr><td id="geofox-api-departure-' +
+            '<tr><td><img src="' +
+            iconSrc +
+            '"/></td>' +
+            '<td id="geofox-api-departure-' +
             departureKey +
             '">' +
-            departure.line.type.shortInfo +
-            " " +
             departure.line.name +
             '</td><td id="">' +
             departure.line.direction +
@@ -55,7 +59,9 @@
             cancelledInfo +
             "</span><br/><span>" +
             departureDelayInfo +
-            "</spn></td></tr>";
+            "</span><br/><span>" +
+            departurePlatform +
+            "</span></td></tr>";
         }
 
         tableInnerHtml = tableHeadHtml + rowHtml;

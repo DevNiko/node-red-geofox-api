@@ -165,6 +165,7 @@ async function handleDepartures(data) {
       type: "STATION"
     },
     serviceTypes: extractServiceTypesFromData(data),
+    allStationsInChangingNode: true,
     time: {
       date: moment().format("L"),
       time: moment().format("LT")
