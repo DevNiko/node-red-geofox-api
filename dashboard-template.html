@@ -20,7 +20,7 @@
       table = $("#geofox_api_table_" + scope.$id);
       stationNameElm = $("#departure_station_" + scope.$id);
 
-      if (msg) {
+      if (msg && msg.payload.length > 0) {
         table.empty();
         const payload = msg.payload;
         const departures = payload.departures;
