@@ -1,1 +1,0 @@
-cd ~/.node-red/ && npm install --no-save /mnt/e/projects/node-red-nodes/node-red-geofox-api && node-red
