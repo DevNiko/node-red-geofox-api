@@ -16,6 +16,7 @@
     "url": "git+https://github.com/DevNiko/node-red-geofox-api.git"
   },
   "keywords": [
+    "node-red",
     "hvv",
     "geofox"
   ],
