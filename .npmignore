@@ -1,0 +1,16 @@
+.vscode
+dashboard-template.html
+yarn.lock
+package.lock
+.git
+npm-debug.log
+.*.swp
+._*
+.DS_Store
+.hg
+.npmrc
+.lock-wscript
+.svn
+.wafpickle-*
+config.gypi
+CVS
