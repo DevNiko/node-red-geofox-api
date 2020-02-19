@@ -1,10 +1,12 @@
 const crypto = require("crypto");
 const rpn = require("request-promise-native");
-const moment = require("moment");
+var moment = require("moment-timezone");
 const apiEndpoint = "https://geofox.hvv.de/gti/public/";
 
-// set date and time format to "de"
-moment.locale("de");
+// set timezone for "de-DE"
+moment()
+  .tz("Europe/Berlin")
+  .format();
 
 function createSignature(messageBody, apiSecretKey) {
   return crypto
@@ -180,11 +182,12 @@ async function handleDepartures(data) {
     serviceTypes: extractServiceTypesFromData(data),
     allStationsInChangingNode: true,
     time: {
-      date: moment().format("L"),
-      time: moment().format("LT")
+      date: moment().format("DD.MM.YYYY"),
+      time: moment().format("HH:mm")
     },
-    maxList: maxList,
-    maxTimeOffset: maxTimeOffset,
+    maxList: parseInt(maxList) !== isNaN ? parseInt(maxList) : 5,
+    maxTimeOffset:
+      parseInt(maxTimeOffset) !== isNaN ? parseInt(maxTimeOffset) : 10,
     useRealtime: true
   };
 
@@ -193,7 +196,7 @@ async function handleDepartures(data) {
     user,
     secret
   );
-  const { error = "", departures = [] } = departureListResponse;
+  const { error = "", departures = [], time } = departureListResponse;
   let payload = {};
 
   if (error !== "") {
@@ -208,7 +211,11 @@ async function handleDepartures(data) {
   if (departures.length > 0) {
     payload = {
       station: departureListBody.station.name,
-      departures: { ...departures }
+      requestedDepartureTime: moment(
+        time.date + " " + time.time,
+        "DD.MM.YYYY HH:mm"
+      ).valueOf(),
+      departures: departures
     };
   }
 

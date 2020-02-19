@@ -20,7 +20,7 @@
       table = $("#geofox_api_table_" + scope.$id);
       stationNameElm = $("#departure_station_" + scope.$id);
 
-      if (msg && msg.payload.length > 0) {
+      if (msg) {
         table.empty();
         const payload = msg.payload;
         const departures = payload.departures;
@@ -29,11 +29,13 @@
 
         for (let [departureKey, departure] of Object.entries(departures)) {
           const departureTime = new Date(
-            nowTime.getTime() + departure.timeOffset * 60000
+            payload.requestedDepartureTime + departure.timeOffset * 60000
           );
           const cancelledInfo = departure.cancelled ? "Fällt aus" : "";
           const departureDelayInfo =
-            departure.delay > 0 ? "Verspt. +" + departure.delay : "";
+            departure.delay > 0
+              ? ' + <span style="color:red">' + departure.delay + "</span>"
+              : ' + <span style="color:green">0</span>';
           const departurePlatform = departure.platform
             ? "Gleis: " + departure.platform
             : "";
@@ -55,10 +57,9 @@
             String(departureTime.getHours()).padStart(2, "0") +
             ":" +
             String(departureTime.getMinutes()).padStart(2, "0") +
+            departureDelayInfo +
             '</td><td id=""> <span style="color:red">' +
             cancelledInfo +
-            "</span><br/><span>" +
-            departureDelayInfo +
             "</span><br/><span>" +
             departurePlatform +
             "</span></td></tr>";
