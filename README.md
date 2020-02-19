@@ -18,4 +18,4 @@ Für die Darstellung auf dem Dashboard wird noch eine Template Node benötigt. I
 
 0.1.0 Kleine Fehler Behebungen
 
-0.1.2 Abfahrzeit Fehler behoben (Zeit nicht korrekt angezeigt) und Auswahl der Verkehrsmittel Erweitert.
+0.1.2 Abfahrzeit Fehler behoben (Zeit nicht korrekt angezeigt) und Auswahl der Verkehrsmittel Erweitert. Hinweis: Das Template auf dem Dashboard muss erneuert werden. 
