@@ -15,5 +15,7 @@ Für die Darstellung auf dem Dashboard wird noch eine Template Node benötigt. I
 # Version
 
 0.1.0 Beta Release
+
 0.1.0 Kleine Fehler Behebungen
+
 0.1.2 Abfahrzeit Fehler behoben (Zeit nicht korrekt angezeigt) und Auswahl der Verkehrsmittel Erweitert.
