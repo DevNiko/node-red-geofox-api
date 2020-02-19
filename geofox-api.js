@@ -127,13 +127,25 @@ function extractServiceTypesFromData(data) {
     serviceTypesBus = false,
     serviceTypesZug = false,
     serviceTypesSbahn = false,
-    serviceTypesUbahn = false
+    serviceTypesUbahn = false,
+    serviceTypesAkn = false,
+    serviceTypesRbahn = false,
+    serviceTypesFernbahn = false,
+    serviceTypesAst = false,
+    serviceTypesFaehre = false,
+    serviceTypesNachtbus = false
   } = data;
 
   if (serviceTypesBus === true) serviceTypes.push("BUS");
   if (serviceTypesZug === true) serviceTypes.push("ZUG");
   if (serviceTypesSbahn === true) serviceTypes.push("SBAHN");
   if (serviceTypesUbahn === true) serviceTypes.push("UBAHN");
+  if (serviceTypesAkn === true) serviceTypes.push("AKN");
+  if (serviceTypesFernbahn === true) serviceTypes.push("FERNBAHN");
+  if (serviceTypesAst === true) serviceTypes.push("AST");
+  if (serviceTypesFaehre === true) serviceTypes.push("FAEHRE");
+  if (serviceTypesNachtbus === true) serviceTypes.push("NACHTBUS");
+  if (serviceTypesRbahn === true) serviceTypes.push("RBAHN");
 
   return serviceTypes;
 }
@@ -234,8 +246,6 @@ module.exports = function(RED) {
     node = this;
 
     node.on("input", async function(msg) {
-      this.log("on input");
-
       switch (node.timetableInformation) {
         case "departure":
           const response = await handleDepartures(config);
