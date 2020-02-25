@@ -12,10 +12,10 @@ Nach der Installation des Plugins erscheint in linken Menuleiste, unter "Funktio
 
 Für die Darstellung auf dem Dashboard wird noch eine Template Node benötigt. In der Datei "dashboard-template.html" stelle ich mein Beispiel zur Verfügung. Gerne ausprobieren und ggf. anpassen.
 
-# Version
+== Changelog ==
 
 0.1.0 Beta Release
 
 0.1.0 Kleine Fehler Behebungen
 
-0.1.2 Abfahrzeit Fehler behoben (Zeit nicht korrekt angezeigt) und Auswahl der Verkehrsmittel Erweitert. Hinweis: Das Template auf dem Dashboard muss erneuert werden. 
+0.1.2 Abfahrzeit Fehler behoben (Zeit nicht korrekt angezeigt) und Auswahl der Verkehrsmittel Erweitert.
