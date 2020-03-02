@@ -34,10 +34,10 @@
           const cancelledInfo = departure.cancelled ? "Fällt aus" : "";
           const departureDelayInfo =
             departure.delay > 0
-              ? ' + <span style="color:red">' + departure.delay + "</span>"
-              : ' + <span style="color:green">0</span>';
-          const departurePlatform = departure.platform
-            ? "Gleis: " + departure.platform
+              ? '+<span style="color:red">' + departure.delay + "</span>"
+              : '+<span style="color:green">0</span>';
+          const departurePlatform = departure.realtimePlatform
+            ? departure.realtimePlatform
             : "";
           const vType = String(departure.line.type.shortInfo).toLowerCase();
           const iconSrc = `https://www.geofox.de/icon_service/vehicle?types=${vType}&height=20`;
@@ -60,7 +60,7 @@
             departureDelayInfo +
             '</td><td id=""> <span style="color:red">' +
             cancelledInfo +
-            "</span><br/><span>" +
+            "</span> <span>" +
             departurePlatform +
             "</span></td></tr>";
         }
