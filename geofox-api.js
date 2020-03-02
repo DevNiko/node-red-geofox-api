@@ -181,26 +181,6 @@ async function handleDepartures(data) {
     maxTimeOffset = 45
   } = data;
 
-  const cnRequestBody = {
-    coordinateType: "EPSG_4326",
-    maxList: 1,
-    theName: {
-      name: station,
-      type: "STATION"
-    }
-  };
-
-  // Check the station name
-  const cnResponse = await checkname(cnRequestBody, user, secret);
-
-  let { results } = cnResponse;
-  let { id, city } = results[0];
-
-  // use auto corrected city name from checkname response
-  if (city && cityFromInput !== city) {
-    cityFromInput = city;
-  }
-
   // prepare the data for the departure list request
   const departureListBody = {
     version: 37,
