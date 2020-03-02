@@ -162,6 +162,11 @@ function extractServiceTypesFromData(data) {
   return serviceTypes;
 }
 
+/**
+ * Retrieve the departures
+ *
+ * @param {Object} data
+ */
 async function handleDepartures(data) {
   if (!data) {
     return {};
@@ -185,6 +190,7 @@ async function handleDepartures(data) {
     }
   };
 
+  // Check the station name
   const cnResponse = await checkname(cnRequestBody, user, secret);
 
   let { results } = cnResponse;
@@ -195,6 +201,7 @@ async function handleDepartures(data) {
     cityFromInput = city;
   }
 
+  // prepare the data for the departure list request
   const departureListBody = {
     version: 37,
     language: "de",
