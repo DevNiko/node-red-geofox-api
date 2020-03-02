@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 const rpn = require("request-promise-native");
-var moment = require("moment-timezone");
+const moment = require("moment-timezone");
 const apiEndpoint = "https://geofox.hvv.de/gti/public/";
 
 // set timezone for "de-DE"
@@ -8,6 +8,12 @@ moment()
   .tz("Europe/Berlin")
   .format();
 
+/**
+ * Creates hmac signature for all api requests
+ *
+ * @param {String} messageBody
+ * @param {String} apiSecretKey
+ */
 function createSignature(messageBody, apiSecretKey) {
   return crypto
     .createHmac("sha1", apiSecretKey)
@@ -15,6 +21,12 @@ function createSignature(messageBody, apiSecretKey) {
     .digest("base64");
 }
 
+/**
+ * Build Geofox GTI request header
+ *
+ * @param {String} apiUser
+ * @param {String} signature
+ */
 function buildRequestHeaders(apiUser, signature) {
   return {
     "Content-Type": "application/json;charset=UTF-8",
