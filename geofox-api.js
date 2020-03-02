@@ -225,9 +225,11 @@ async function handleDepartures(data) {
   if (departures.length > 0) {
     departures.forEach(function(curentElement, index) {
       if (curentElement.delay > 0) {
+        // delay seconds in minutes
         curentElement.delay = curentElement.delay / 60;
       }
     });
+
     payload = {
       station: departureListBody.station.name,
       requestedDepartureTime: moment(
