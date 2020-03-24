@@ -1,10 +1,10 @@
-# node-red-geofox-api
+### node-red-geofox-api
 
 Dieses Node-Red Dashboard Plugin ermöglicht es aktuelle Abfahrtszeiten aller Linien einer HVV Haltestelle abzufragen. Dafür wird ein API-Key von Geofox benötigt. Dieser kann individuell bei Geofox beantragt werden.
 
 Dieses Plugin ist ein Hobby projekt und befindet sich in ständiger Weiterentwicklung. Falls ihr Fehler findet oder Vorschläge für neue Funktionen habt, bitte erstellt ein Issue hier auf GitHub.
 
-# Installation
+### Installation
 
 Entweder über die Paketverwaltung von Node Red Dashboard oder über NPM Install. Das Paket heißt "node-red-contrib-geofox-api". Oder durch das Klonen dieses Repos und manuellem Hinzufügen zum ".node-red" Verzeichnisses eures Node-Red Servers.
 
@@ -12,7 +12,7 @@ Nach der Installation des Plugins erscheint in linken Menuleiste, unter "Funktio
 
 Für die Darstellung auf dem Dashboard wird noch eine Template Node benötigt. In der Datei "dashboard-template.html" stelle ich mein Beispiel zur Verfügung. Gerne ausprobieren und ggf. anpassen.
 
-== Changelog ==
+### Changelog
 
 0.1.0 Beta Release
 
