@@ -1,6 +1,6 @@
 # node-red-geofox-api
 
-Dieses Node-Red Dashboard Plugin ermögklicht es aktuellen Abfahrtszeiten aller Linien einer Haltestelle abzufragen. Dafür wird ein API-Key von Geofox benötigt. Dieser kann individuell bei Geofox beantragt werden.
+Dieses Node-Red Dashboard Plugin ermöglicht es aktuellen Abfahrtszeiten aller Linien einer Haltestelle abzufragen. Dafür wird ein API-Key von Geofox benötigt. Dieser kann individuell bei Geofox beantragt werden.
 
 Dieses Plugin ist ein Hobby projekt und befindet sich in ständiger Weiterentwicklung. Falls ihr Fehler findet oder Vorschläge für neue Funktionen habt, bitte erstellt ein Issue hier auf GitHub.
 
