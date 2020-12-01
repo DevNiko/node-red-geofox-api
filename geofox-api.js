@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const rpn = require("request-promise-native");
 const moment = require("moment-timezone");
-const apiEndpoint = "https://geofox.hvv.de/gti/public/";
+const apiEndpoint = "https://gti.geofox.de/gti/public/";
 
 // set timezone for "de-DE"
 moment()
@@ -47,13 +47,13 @@ function buildRequestHeaders(apiUser, signature) {
  */
 function checkname(msgBody, apiUser, apiSecret) {
   if (!apiSecret) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       reject("No Geofox API Secret provided");
     });
   }
 
   if (!apiUser) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       reject("No Geofox User provided");
     });
   }
@@ -69,19 +69,19 @@ function checkname(msgBody, apiUser, apiSecret) {
   };
 
   return rpn(options)
-    .then(function(response) {
+    .then(function (response) {
       return response;
     })
-    .catch(function(err) {
+    .catch(function (err) {
       let { statusCode, error } = err;
       let { errorText, errDevInfo = "" } = error;
       return new Error(
         "Geofox API 'checkName' Request Error: " +
-          statusCode +
-          " - " +
-          errorText +
-          " - " +
-          errDevInfo
+        statusCode +
+        " - " +
+        errorText +
+        " - " +
+        errDevInfo
       );
     });
 }
@@ -95,13 +95,13 @@ function checkname(msgBody, apiUser, apiSecret) {
  */
 function departureList(msgBody, apiUser, apiSecret) {
   if (!apiSecret) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       reject("No Geofox API Secret provided");
     });
   }
 
   if (!apiUser) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       reject("No Geofox User provided");
     });
   }
@@ -117,10 +117,10 @@ function departureList(msgBody, apiUser, apiSecret) {
   };
 
   return rpn(options)
-    .then(function(response) {
+    .then(function (response) {
       return response;
     })
-    .catch(function(err) {
+    .catch(function (err) {
       let { statusCode, error } = err;
       let { errorText = "", errDevInfo = "" } = error;
       return {
@@ -222,7 +222,7 @@ async function handleDepartures(data) {
   }
 
   if (departures.length > 0) {
-    departures.forEach(function(curentElement, index) {
+    departures.forEach(function (curentElement, index) {
       if (curentElement.delay > 0) {
         // delay seconds in minutes
         curentElement.delay = curentElement.delay / 60;
@@ -242,9 +242,9 @@ async function handleDepartures(data) {
   return payload;
 }
 
-function handleRoute() {}
+function handleRoute() { }
 
-module.exports = function(RED) {
+module.exports = function (RED) {
   function GeofoxApiNode(config) {
     let node;
 
@@ -253,7 +253,7 @@ module.exports = function(RED) {
     this.timetableInformation = config.timetableInformation;
     node = this;
 
-    node.on("input", async function(msg) {
+    node.on("input", async function (msg) {
       switch (node.timetableInformation) {
         case "departure":
           const response = await handleDepartures(config);

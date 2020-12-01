@@ -21,3 +21,5 @@ Für die Darstellung auf dem Dashboard wird noch eine Template Node benötigt. I
 0.1.2 Abfahrzeit Fehler behoben (Zeit nicht korrekt angezeigt) und Auswahl der Verkehrsmittel Erweitert.
 
 0.1.3 Behoben: Abfahrzeit Verspätung wurde nicht korrekt angezeigt. Echtzeit Gleis Information wurde nicht korrekt angezeigt.
+
+0.1.4 Neuer Geofox API Endpunkt
